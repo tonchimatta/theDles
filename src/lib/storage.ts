@@ -3,6 +3,7 @@ export const KEYS = {
   LAST_PLAYED: 'dles_last_played',
   SHUFFLED_QUEUE: 'dles_shuffled_queue',
   DLES_VERSION: 'dles_version',
+  LAST_RANDOM: 'dles_last_random',
 } as const;
 
 export function getItem<T>(key: string, fallback: T): T {

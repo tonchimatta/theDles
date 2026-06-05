@@ -8,6 +8,26 @@ export function readStreak(): { streak: number; lastPlayed: string | null } {
   };
 }
 
+/**
+ * The streak as it should be displayed *right now*, accounting for missed days.
+ * Stored streak is only rewritten on play, so it can be stale — e.g. a 10-day
+ * streak that the user abandoned a week ago is "broken" (0) even though the
+ * stored value is still 10. A streak survives as long as the last play was
+ * today or yesterday.
+ */
+export function currentStreak(): number {
+  const { streak, lastPlayed } = readStreak();
+  if (lastPlayed === null) return 0;
+
+  const today = todayUTC();
+  if (lastPlayed === today) return streak;
+
+  const daysDiff = Math.round(
+    (new Date(today).getTime() - new Date(lastPlayed).getTime()) / 86_400_000
+  );
+  return daysDiff === 1 ? streak : 0;
+}
+
 export function updateStreak(): number {
   const today = todayUTC();
   const { streak, lastPlayed } = readStreak();

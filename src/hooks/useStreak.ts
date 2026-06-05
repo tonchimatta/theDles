@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { readStreak, updateStreak } from '../lib/streak';
+import { currentStreak, updateStreak } from '../lib/streak';
 
 export function useStreak() {
-  const [streak, setStreak] = useState(() => readStreak().streak);
+  const [streak, setStreak] = useState(() => currentStreak());
 
   function markDailyPlayed() {
     const updated = updateStreak();

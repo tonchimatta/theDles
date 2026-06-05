@@ -10,31 +10,52 @@ function fisherYates(ids: number[]): number[] {
   return arr;
 }
 
-function buildQueue(games: Dle[], excludeId?: number): number[] {
-  const ids = games.map((g) => g.id).filter((id) => id !== excludeId);
-  return fisherYates(ids);
+/**
+ * A fresh shuffle of every game id. If `avoidFirstId` is given and lands at the
+ * front, it's swapped back one slot so the same game can't be served twice in a
+ * row across a reshuffle boundary.
+ */
+function freshQueue(games: Dle[], avoidFirstId?: number): number[] {
+  const q = fisherYates(games.map((g) => g.id));
+  if (avoidFirstId !== undefined && q.length > 1 && q[0] === avoidFirstId) {
+    [q[0], q[1]] = [q[1], q[0]];
+  }
+  return q;
 }
 
+/**
+ * Returns the next random game, never repeating until every game has been shown.
+ * `excludeId` (today's daily game) is skipped at serve time but kept in rotation
+ * for other days. The queue and "last served" marker persist in localStorage.
+ */
 export function getNextRandom(games: Dle[], excludeId?: number): Dle {
-  const storedVersion = getItem<number>(KEYS.DLES_VERSION, 0);
+  const storedVersion = getItem<number>(KEYS.DLES_VERSION, -1);
   const currentVersion = games.length;
+  const lastServed = getItem<number | null>(KEYS.LAST_RANDOM, null);
 
   let queue = getItem<number[]>(KEYS.SHUFFLED_QUEUE, []);
 
-  // Invalidate queue if game list has changed
+  // Rebuild if the game list changed or the queue ran out
   if (storedVersion !== currentVersion || queue.length === 0) {
-    queue = buildQueue(games, excludeId);
+    queue = freshQueue(games, lastServed ?? undefined);
     setItem(KEYS.DLES_VERSION, currentVersion);
   }
 
-  const nextId = queue.shift()!;
+  // Pop the next id; if it's today's daily, send it to the back and take the
+  // next one (so the daily stays in rotation but isn't served as "another").
+  let nextId = queue.shift()!;
+  if (excludeId !== undefined && nextId === excludeId && queue.length > 0) {
+    queue.push(nextId);
+    nextId = queue.shift()!;
+  }
 
-  // Reshuffle when queue is exhausted after this pick
+  // Rebuild now if we just drained the queue, avoiding an immediate repeat
   if (queue.length === 0) {
-    queue = buildQueue(games, excludeId);
+    queue = freshQueue(games, nextId);
   }
 
   setItem(KEYS.SHUFFLED_QUEUE, queue);
+  setItem(KEYS.LAST_RANDOM, nextId);
 
   return games.find((g) => g.id === nextId) ?? games[0];
 }

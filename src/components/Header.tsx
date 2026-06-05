@@ -1,4 +1,5 @@
 import { StreakBadge } from './StreakBadge';
+import { ALL_GAMES } from '../data';
 
 interface Props {
   streak: number;
@@ -10,7 +11,7 @@ export function Header({ streak }: Props) {
       <div className="flex items-center gap-2">
         <span className="text-xl">🎮</span>
         <span className="font-bold text-lg tracking-tight text-white">Daily Dles</span>
-        <span className="text-zinc-500 text-sm hidden sm:inline">· 713 games</span>
+        <span className="text-zinc-500 text-sm hidden sm:inline">· {ALL_GAMES.length} games</span>
       </div>
       <StreakBadge streak={streak} />
     </header>
