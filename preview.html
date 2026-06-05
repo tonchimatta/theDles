@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Dles — Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f0f13;
+    color: #e4e4e7;
+    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #27272a;
+  }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .header-title { font-weight: 700; font-size: 18px; color: white; letter-spacing: -0.3px; }
+  .header-count { color: #71717a; font-size: 14px; }
+  .streak-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.35);
+    color: #fb923c;
+    border-radius: 999px; padding: 4px 12px;
+    font-size: 13px; font-weight: 600;
+  }
+
+  /* Main */
+  main {
+    max-width: 672px; margin: 0 auto;
+    padding: 32px 16px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  /* Section labels */
+  .section-label {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .label-text { font-size: 11px; font-weight: 600; color: #52525b; letter-spacing: 0.1em; text-transform: uppercase; }
+  .label-date { font-size: 11px; color: #3f3f46; }
+
+  /* Game card */
+  .card {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-meta { font-size: 11px; font-weight: 600; color: #52525b; letter-spacing: 0.1em; text-transform: uppercase; }
+  .category-chip {
+    display: inline-block;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 10px;
+  }
+  .chip-words    { background: #2563eb; color: white; }
+  .chip-music    { background: #9333ea; color: white; }
+  .chip-geo      { background: #16a34a; color: white; }
+  .chip-math     { background: #eab308; color: black; }
+  .chip-movies   { background: #dc2626; color: white; }
+  .chip-sports   { background: #f97316; color: white; }
+  .chip-games    { background: #4f46e5; color: white; }
+  .chip-misc     { background: #71717a; color: white; }
+  .chip-trivia   { background: #0d9488; color: white; }
+
+  .game-name { font-size: 24px; font-weight: 700; color: white; line-height: 1.2; margin-top: 4px; }
+  .game-desc { font-size: 14px; color: #a1a1aa; line-height: 1.6; }
+  .card-footer { display: flex; justify-content: flex-end; }
+  .play-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; color: black;
+    font-weight: 600; font-size: 14px;
+    padding: 10px 20px; border-radius: 10px;
+    text-decoration: none;
+    border: none; cursor: pointer;
+  }
+  .play-btn:hover { background: #f4f4f5; }
+
+  /* Play another button */
+  .play-another {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: #27272a; border: 1px solid #3f3f46;
+    color: white; font-weight: 600; font-size: 15px;
+    padding: 18px 24px; border-radius: 16px;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .play-another:hover { background: #3f3f46; }
+  .play-another .sub { color: #71717a; font-size: 13px; font-weight: 400; }
+
+  /* Browse section */
+  .browse-label { font-size: 11px; font-weight: 600; color: #52525b; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .chips-row {
+    display: flex; gap: 8px; overflow-x: auto;
+    padding-bottom: 8px; scrollbar-width: none;
+    margin-bottom: 12px;
+  }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    flex-shrink: 0;
+    border-radius: 999px; font-size: 12px; font-weight: 500;
+    padding: 4px 12px; cursor: pointer;
+    background: #27272a; color: #a1a1aa;
+    border: none;
+    white-space: nowrap;
+  }
+  .filter-chip.active { background: white; color: black; }
+  .filter-chip.words-active  { background: #2563eb; color: white; }
+
+  /* Game list */
+  .game-list {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .game-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(39,39,42,0.5);
+    text-decoration: none;
+    color: inherit;
+    gap: 12px;
+  }
+  .game-row:last-child { border-bottom: none; }
+  .game-row:hover { background: #27272a; }
+  .game-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .game-row-name { color: white; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .play-link { color: #52525b; font-size: 13px; white-space: nowrap; }
+  .game-row:hover .play-link { color: #d4d4d8; }
+
+  footer {
+    text-align: center; font-size: 11px; color: #3f3f46;
+    padding: 24px 16px;
+    border-top: 1px solid rgba(39,39,42,0.4);
+  }
+  footer a { color: #52525b; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span style="font-size:20px">🎮</span>
+    <span class="header-title">Daily Dles</span>
+    <span class="header-count">· 713 games</span>
+  </div>
+  <div class="streak-badge">
+    <span style="font-size:15px">🔥</span>
+    <span>7 days</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Daily game -->
+  <section>
+    <div class="section-label">
+      <span class="label-text">Today's Dle</span>
+      <span class="label-date">Thursday, June 5, 2026</span>
+    </div>
+    <div class="card">
+      <div class="card-meta">Daily Pick</div>
+      <div>
+        <span class="category-chip chip-words">Words</span>
+        <div class="game-name">NYT Wordle</div>
+        <div class="game-desc" style="margin-top:8px">Guess the 5-letter word in 6 tries. A new word every day.</div>
+      </div>
+      <div class="card-footer">
+        <a class="play-btn" href="#">Play Now →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Play another -->
+  <section>
+    <button class="play-another">
+      <span style="font-size:20px">🎲</span>
+      Play Another Dle
+      <span class="sub">(random, no repeats)</span>
+    </button>
+  </section>
+
+  <!-- Random card (shown after clicking play another) -->
+  <section>
+    <div class="card">
+      <div class="card-meta">Random Pick</div>
+      <div>
+        <span class="category-chip chip-music">Music</span>
+        <div class="game-name">Bandle</div>
+        <div class="game-desc" style="margin-top:8px">Guess the song from short audio clips — hear more of it with each wrong guess.</div>
+      </div>
+      <div class="card-footer">
+        <a class="play-btn" href="#">Play Now →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse -->
+  <section>
+    <div class="browse-label">Browse All Dles · 713 games</div>
+
+    <div class="chips-row">
+      <button class="filter-chip active">All</button>
+      <button class="filter-chip">Card/Board Games</button>
+      <button class="filter-chip">Colors</button>
+      <button class="filter-chip">Estimation</button>
+      <button class="filter-chip">Food</button>
+      <button class="filter-chip">Geography</button>
+      <button class="filter-chip">History</button>
+      <button class="filter-chip">Math/Logic</button>
+      <button class="filter-chip">Miscellaneous</button>
+      <button class="filter-chip">Movies/TV</button>
+      <button class="filter-chip">Music</button>
+      <button class="filter-chip">Science/Nature</button>
+      <button class="filter-chip">Sports</button>
+      <button class="filter-chip">Trivia</button>
+      <button class="filter-chip">Vehicles</button>
+      <button class="filter-chip">Video Games</button>
+      <button class="filter-chip">Words</button>
+    </div>
+
+    <div class="game-list">
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">23 Words</span>
+          <span class="category-chip chip-words" style="font-size:10px;padding:1px 7px">Words</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Bandle</span>
+          <span class="category-chip chip-music" style="font-size:10px;padding:1px 7px">Music</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Worldle</span>
+          <span class="category-chip chip-geo" style="font-size:10px;padding:1px 7px">Geography</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Nerdle</span>
+          <span class="category-chip chip-math" style="font-size:10px;padding:1px 7px">Math/Logic</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Framed</span>
+          <span class="category-chip chip-movies" style="font-size:10px;padding:1px 7px">Movies/TV</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Poeltl</span>
+          <span class="category-chip chip-sports" style="font-size:10px;padding:1px 7px">Sports</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Guess The Game</span>
+          <span class="category-chip chip-games" style="font-size:10px;padding:1px 7px">Video Games</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Murdle</span>
+          <span class="category-chip chip-math" style="font-size:10px;padding:1px 7px">Math/Logic</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Globle</span>
+          <span class="category-chip chip-geo" style="font-size:10px;padding:1px 7px">Geography</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Contexto</span>
+          <span class="category-chip chip-words" style="font-size:10px;padding:1px 7px">Words</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row">
+        <div class="game-row-left">
+          <span class="game-row-name">Redactle</span>
+          <span class="category-chip chip-trivia" style="font-size:10px;padding:1px 7px">Trivia</span>
+        </div>
+        <span class="play-link">Play →</span>
+      </a>
+      <a href="#" class="game-row" style="border:none">
+        <div class="game-row-left">
+          <span class="game-row-name" style="color:#52525b">… and 702 more</span>
+        </div>
+        <span class="play-link"></span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Game data from <a href="https://dles.aukspot.com" target="_blank">dles.aukspot.com</a>
+</footer>
+
+</body>
+</html>
