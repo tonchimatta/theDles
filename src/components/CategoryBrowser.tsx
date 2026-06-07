@@ -15,18 +15,21 @@ export function CategoryBrowser({ games }: Props) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
-        Browse All Dles · {games.length} games
-      </h3>
+      <div className="flex items-center gap-3">
+        <span className="bg-[#B9FF66] text-black text-xs font-bold rounded-full px-3 py-1 uppercase tracking-wide">
+          Browse
+        </span>
+        <span className="text-zinc-400 text-sm">All {games.length} dles</span>
+      </div>
 
-      {/* Category chips — horizontal scroll on mobile */}
+      {/* Category filter chips */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         <button
           onClick={() => setActive(null)}
-          className={`shrink-0 rounded-full text-xs font-medium px-3 py-1 transition-colors ${
+          className={`shrink-0 rounded-full text-xs font-semibold px-3 py-1 border-2 transition-all ${
             active === null
-              ? 'bg-white text-black'
-              : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+              ? 'bg-[#B9FF66] text-black border-[#B9FF66]'
+              : 'bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-500'
           }`}
         >
           All
@@ -38,10 +41,10 @@ export function CategoryBrowser({ games }: Props) {
             <button
               key={cat}
               onClick={() => setActive(isActive ? null : cat)}
-              className={`shrink-0 rounded-full text-xs font-medium px-3 py-1 transition-all ${
+              className={`shrink-0 rounded-full text-xs font-semibold px-3 py-1 border-2 transition-all ${
                 isActive
-                  ? `${bg} ${text} ring-2 ring-white/30`
-                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  ? `${bg} ${text} border-transparent`
+                  : 'bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-500'
               }`}
             >
               {cat}
@@ -51,7 +54,7 @@ export function CategoryBrowser({ games }: Props) {
       </div>
 
       {/* Game list */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <div className="card-brutalist bg-zinc-900 border-2 border-zinc-700 rounded-2xl overflow-hidden">
         <div className="divide-y divide-zinc-800/50">
           {filtered.map((game) => (
             <GameListItem key={game.id} game={game} />
@@ -68,7 +71,7 @@ export function CategoryBrowser({ games }: Props) {
           {' · '}
           <button
             onClick={() => setActive(null)}
-            className="text-zinc-400 hover:text-white underline"
+            className="text-[#B9FF66] hover:text-[#caff7a] underline"
           >
             Show all
           </button>

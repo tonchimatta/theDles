@@ -20,13 +20,28 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Header streak={streak} />
 
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 flex flex-col gap-6">
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 flex flex-col gap-8">
+
+        {/* Hero */}
+        <section className="flex flex-col gap-3 pt-2">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight tracking-tight">
+            Play a new{' '}
+            <span className="text-[#B9FF66]">-dle</span>{' '}
+            every day
+          </h1>
+          <p className="text-zinc-400 text-base leading-relaxed max-w-md">
+            {ALL_GAMES.length}+ word games, music puzzles, geography challenges — all in one place.
+          </p>
+        </section>
+
         {/* Daily game */}
         <section className="flex flex-col gap-3">
-          <div className="flex items-baseline justify-between">
-            <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
-              Today's Dle
-            </h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="bg-[#B9FF66] text-black text-xs font-bold rounded-full px-3 py-1 uppercase tracking-wide">
+                Today's Dle
+              </span>
+            </div>
             <span className="text-xs text-zinc-600">{today}</span>
           </div>
           <GameCard game={dailyGame} onPlay={markPlayed} label="Daily Pick" />
@@ -34,6 +49,11 @@ function App() {
 
         {/* Random game */}
         <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <span className="bg-zinc-800 text-zinc-300 text-xs font-bold rounded-full px-3 py-1 uppercase tracking-wide border-2 border-zinc-700">
+              Random
+            </span>
+          </div>
           <PlayAnotherButton onPlay={playNext} />
           {randomGame && (
             <GameCard game={randomGame} label="Random Pick" />
@@ -44,13 +64,13 @@ function App() {
         <CategoryBrowser games={ALL_GAMES} />
       </main>
 
-      <footer className="text-center text-zinc-700 text-xs py-6 border-t border-zinc-800/50">
+      <footer className="text-center text-zinc-700 text-xs py-6 border-t-2 border-zinc-800/50">
         Game data from{' '}
         <a
           href="https://dles.aukspot.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-zinc-500 hover:text-zinc-400 underline"
+          className="text-zinc-500 hover:text-[#B9FF66] underline transition-colors"
         >
           dles.aukspot.com
         </a>

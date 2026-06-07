@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
@@ -10,7 +10,7 @@
 
 body {
   margin: 0;
-  background-color: #0f0f13;
+  background-color: #0c0c10;
   color: #e4e4e7;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -26,4 +26,12 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.card-brutalist {
+  box-shadow: 4px 4px 0px 0px rgba(185, 255, 102, 0.12);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.card-brutalist:hover {
+  box-shadow: 4px 4px 0px 0px rgba(185, 255, 102, 0.32);
 }

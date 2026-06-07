@@ -10,9 +10,11 @@ interface Props {
 
 export function GameCard({ game, onPlay, label }: Props) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4">
+    <div className="card-brutalist bg-zinc-900 border-2 border-zinc-700 hover:border-[#B9FF66]/40 rounded-2xl p-6 flex flex-col gap-4">
       {label && (
-        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">{label}</p>
+        <span className="self-start bg-[#B9FF66] text-black text-xs font-bold rounded-full px-3 py-1 uppercase tracking-wide">
+          {label}
+        </span>
       )}
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-2 min-w-0">
